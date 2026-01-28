@@ -1,0 +1,55 @@
+/*app-card-display{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    left: 0%;
+    top: 50%;
+    transform: translate(-0%, -50%);
+}
+
+app-card-editor{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    right: 0%;
+    top: 50%;
+    transform: translate(-0%, -50%);
+}*/
+
+#container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 98%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    app-card-display{
+        position: relative;
+        flex: 4;
+    }
+
+    app-card-editor{
+        position: relative;
+        flex: 1;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+}
+
+@media screen and (min-width: 480px){
+    #container{
+        flex-direction: row;
+
+        app-card-display{
+            flex: 3;
+        }
+    
+        app-card-editor{
+            flex: 4;
+            overflow-y: hidden;
+        }
+    }
+}

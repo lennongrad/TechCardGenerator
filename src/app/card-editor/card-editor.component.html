@@ -1,0 +1,61 @@
+<div id="editor-container">
+    <div class="editor-option">
+        <div class="option-title">Name:</div>
+        <div class="option-input">
+            <input (keyup)="nameKey($event)" #name>
+        </div>
+    </div>
+    <div class="editor-option">
+        <div class="option-title">Artist:</div>
+        <div class="option-input">
+            <input (keyup)="creditsKey($event)" #credit>
+        </div>
+    </div>
+    <div class="editor-option">
+        <div class="option-title">Type:</div>
+        <div class="option-input">
+            <input (keyup)="typeKey($event)" #types>
+        </div>
+    </div>
+    <div class="editor-option">
+        <div class="option-title">Image URL:</div>
+        <div class="option-input" id="file-input">
+            <input type="file" class="file-input-dialogue" (change)="onFileChanged($event)" #fileInput>
+            <button (click)="fileInput.click()">Upload</button>
+            <input placeholder="Use external URL..." (keyup)="urlKey($event)" #url>
+        </div>
+    </div>
+    <div class="editor-option">
+        <div class="option-title">Cost:</div>
+        <div class="option-input">
+            <input (keyup)="vpKey($event)" #vp>
+        </div>
+    </div>
+    <div class="editor-option" id="option-abilities">
+        <div class="option-title">Abilities:</div>
+        <div class="option-input">
+            <div id="abilities-buttons">
+                <button (click)="addAbility()">Add Ability</button>
+                <button (click)="removeAbility()">Remove Ability</button>
+            </div>
+            <div class="option-input" #abilitiesList>
+                <div class="ability-option" *ngFor="let x of [].constructor(getAbilitiesLength()); let i = index">
+                    <input class="ability-name" (keyup)="abilityNameInput(i,$event)">
+                    <input class="ability-reminder" (keyup)="abilityReminderInput(i,$event)">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="saves-container">
+        <div id="save-button">
+            <button (click)="saveCard()">Save Card</button>
+        </div>
+        <div id="all-saved-cards">
+            <div class="saved-card" *ngFor="let card of getAllCards(); index as i" (click)="loadSavedCard(i)" (contextmenu)="deleteCard(i)">
+                <span class="cost-icon">[{{card.vp}}]</span>
+                <span class="star-icon" *ngIf="card.star">★</span>
+                <span>{{card.name}}</span></div>
+        </div>
+    </div>
+    <img src="{{capturedImage}}">
+</div>

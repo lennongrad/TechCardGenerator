@@ -1,0 +1,52 @@
+{
+  "hash": "5fbe9f16",
+  "configHash": "de88e245",
+  "lockfileHash": "d04ed3ad",
+  "browserHash": "64a789a5",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "54826d33",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "9df12c18",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "ff2f427e",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "df2114a6",
+      "needsInterop": false
+    },
+    "html2canvas": {
+      "src": "../../../../../node_modules/html2canvas/dist/html2canvas.esm.js",
+      "file": "html2canvas.js",
+      "fileHash": "68e283a7",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-7X43UPIX": {
+      "file": "chunk-7X43UPIX.js"
+    },
+    "chunk-FY7A7EPE": {
+      "file": "chunk-FY7A7EPE.js"
+    },
+    "chunk-NUHWZ3R2": {
+      "file": "chunk-NUHWZ3R2.js"
+    },
+    "chunk-WDMUDEB6": {
+      "file": "chunk-WDMUDEB6.js"
+    }
+  }
+}
