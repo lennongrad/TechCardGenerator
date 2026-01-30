@@ -17,8 +17,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": {"base": "../lennongrad.github.io/DraftingGame/", "browser": ""},
-            "baseHref": "/DraftingGame/",
+            "outputPath": {"base": "../lennongrad.github.io/TechCardGenerator/", "browser": ""},
+            "baseHref": "/TechCardGenerator/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [

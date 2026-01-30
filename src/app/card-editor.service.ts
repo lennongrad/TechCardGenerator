@@ -3,16 +3,10 @@ import { CardDisplayComponent } from './card-display/card-display.component';
 import { CardData } from './carddata';
 
 function compare( a: CardData, b: CardData ) {
-  if(a.star < b.star){
+  if ( a.cost! < b.cost! ){
     return -1;
   }
-  if(a.star > b.star){
-    return 1;
-  }
-  if ( a.vp! < b.vp! ){
-    return -1;
-  }
-  if ( a.vp! > b.vp! ){
+  if ( a.cost! > b.cost! ){
     return 1;
   }
   return 0;
@@ -25,16 +19,13 @@ export class CardEditorService {
   allCards: Array<CardData> = [];
 
   currentCard: CardData = {
-    pop: 0, cash: 0, trouble: 0, star: false,
-    hasPop: false, hasCash: false, hasTrouble: false,
-    vp: "",
+    cost: "",
     abilities: [],
     text: "",
     name: "",
     imageURL: "",
     credits: "",
-    type: "",
-    textSizeModifier: 1
+    type: ""
   };
   
   cardDisplayComponent?: CardDisplayComponent;
@@ -74,6 +65,7 @@ export class CardEditorService {
     if(this.cardDisplayComponent != undefined){
       this.cardDisplayComponent.setCardDimensions();
     }
+    this.cardUpdate.emit(null);
   }
 
   constructor() {

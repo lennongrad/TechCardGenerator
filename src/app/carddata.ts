@@ -1,23 +1,14 @@
 export interface AbilityData{
     name: string,
-    reminder?: string,
-    overrideReminder?: boolean
+    reminder?: string
 }
 
 export interface CardData{
     abilities: Array<AbilityData>,
     text: string,
     name: string,
+    cost: string,
     imageURL: string,
-    vp: string,
-    pop: number,
-    cash: number,
-    trouble: number,
-    hasPop: boolean,
-    hasCash: boolean,
-    hasTrouble: boolean,
-    star: boolean,
     credits: string,
-    type: string,
-    textSizeModifier: number
+    type: string
 }

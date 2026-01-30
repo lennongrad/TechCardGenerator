@@ -28,7 +28,6 @@ export class CardDisplayComponent {
   public fontSizeReminder: number = 0;
   // resource icons
   public statIconSize: number = 0;
-  public realStatIconSize: number = 0;
   public statModifier: number = 3;
   public resourceIconSize: number = 0;
 
@@ -59,10 +58,6 @@ export class CardDisplayComponent {
     this.fontSizeLarge = this.cardWidth * .05;
     this.fontSizeHuge = this.cardWidth * .12;
     this.fontSizeReminder = this.cardWidth * .04;
-    // reminder size change based on amount of text
-    // set icon size
-    this.statIconSize = this.cardWidth * .075;
-    this.realStatIconSize = this.statIconSize * 2.5;
 
     setTimeout(() => {this.onCardUpdate()}, 100)
   }
@@ -72,16 +67,6 @@ export class CardDisplayComponent {
   //////////////
   getName(): string{
     return this.getCurrentCard().name;
-  }
-
-  getPopBackgroundImage(): string {
-    return this.getCurrentCard().pop >= 0 ? 'url("./assets/trap1.png")' : 'url("./assets/trap3.png")';
-  }
-  getCashBackgroundImage(): string {
-    return this.getCurrentCard().cash >= 0 ? 'url("./assets/trap2.png")' : 'url("./assets/trap3.png")';
-  }
-  getTroubleBackgroundImage(): string {
-    return this.getCurrentCard().trouble < 0 ? 'url("./assets/trap4.png")' : 'url("./assets/trap5.png")';
   }
 
   getCardBackground(): string{
@@ -96,39 +81,43 @@ export class CardDisplayComponent {
     return this.getCurrentCard().abilities;
   }
 
-  getIcons(ability: string): Array<[string, string, string]> {
-    var icons = Array<[string, string, string]>();
+  getIcons(ability: string): Array<[string, string, string, string, string]> {
+    var icons = Array<[string, string, string, string, string]>();
 
     ability.split(",").forEach((a) => {
-      if(a.indexOf(".") != -1){
-        var first = a.split(".")[0]
-        var second = a.split(".")[1]
+      var iconData: [string, string, string, string, string] = [a, "", "", "", ""];      
+      
+      if(iconData[0].indexOf("&") != -1){
+        var splitResults = iconData[0].split("&")
 
-        if(first.indexOf("_") != -1){
-          icons.push([first, second, first.split("_")[1]])
-        } else {
-          icons.push([first, second, ""])
-        }
-      } else {
-        icons.push([a, "", ""])
+        iconData[0] = splitResults[0]
+        iconData[4] = splitResults[1]
       }
+
+      if(iconData[0].indexOf("@") != -1){
+        var splitResults = iconData[0].split("@")
+
+        iconData[0] = splitResults[0]
+        iconData[3] = splitResults[1]
+      }
+
+      if(iconData[0].indexOf(".") != -1){
+        var splitResults = iconData[0].split(".")
+
+        iconData[0] = splitResults[0]
+        iconData[1] = splitResults[1]
+      }
+
+      if(iconData[0].indexOf("_") != -1){
+        var splitResults = iconData[0].split("_")
+
+        iconData[2] = splitResults[1]
+      }
+
+      icons.push(iconData);
     })
 
     return icons;
-  }
-
-  getReminderless(): string{
-    var baseline = "";
-    var abilities = this.getCurrentCard().abilities;
-    for(let index in abilities){
-      var ability = abilities[index];
-      var reminderText = this.textService.getReminderText(ability.name);
-
-      if(((ability.reminder == null || ability.reminder == "") && reminderText == "") || (ability.overrideReminder)){
-        baseline += ability.name + ", ";
-      }
-    }
-    return baseline.slice(0, baseline.length - 2);
   }
 
   getText(): string{
@@ -140,11 +129,14 @@ export class CardDisplayComponent {
   }
 
   getType(): string {
-    return this.getCurrentCard().type != null ? this.getCurrentCard().type! : "";
+    if(this.getCurrentCard().type.toLowerCase() == "policy"){
+      return "Policy"
+    }
+    return "Facility"
   }
 
   getCost(): string {
-    var segments = this.getCurrentCard().vp.split(".")
+    var segments = this.getCurrentCard().cost.split(".")
 
     if(segments.length != 2) {
       return "0"
@@ -154,7 +146,7 @@ export class CardDisplayComponent {
   }
 
   getColor(): string{
-    var segments = this.getCurrentCard().vp.split(".")
+    var segments = this.getCurrentCard().cost.split(".")
 
     if(segments.length != 2) {
       return "d"
@@ -165,40 +157,6 @@ export class CardDisplayComponent {
     }
 
     return segments[0]
-  }
-
-  getVP(): string{
-    if(this.getCurrentCard().vp == undefined){
-      return "";
-    }
-    return this.getCurrentCard().vp!;
-  }
-
-  getPaddingBottom(statName: string): string{
-    return (Math.abs(this.getAmount(statName)) != 0 && Math.abs(this.getAmount(statName)) != 1 && Math.abs(this.getAmount(statName)) != 2 && Math.abs(this.getAmount(statName)) != 6 && Math.abs(this.getAmount(statName)) != 8) ? '30%' : '20%'
-  }
-
-  getAmount(statName: string): number{
-    switch(statName){
-      case "pop": return this.getCurrentCard().pop!; 
-      case "cash": return this.getCurrentCard().cash!; 
-      case "trouble": return this.getCurrentCard().trouble!; 
-    }
-    return 0;
-  }
-
-  getStat(statName: string): string{
-    var amt: number = 0;
-    switch(statName){
-      case "pop": amt = this.getCurrentCard().pop!; break;
-      case "cash": amt = this.getCurrentCard().cash!; break;
-      case "trouble": amt = this.getCurrentCard().trouble!; break;
-    }
-    
-    if(amt >= 0){
-      return "+" + amt;
-    }
-    return String(amt);
   }
 
   ngOnInit(){
@@ -240,7 +198,9 @@ export class CardDisplayComponent {
     while(this.getTextWidth(this.getCurrentCard().name.toUpperCase(), `900 ${startSize}px myFont`) > this.cardWidth * 0.525){
       startSize -= 0.1;
     }
-   this.fontSizeName = startSize;
+    this.fontSizeName = startSize;
+    
+    this.statIconSize = this.cardWidth * .15 * (1 - 0.2 * (this.getAbilities().length - 1));
   }
 
   constructor(private element:ElementRef, private textService: CardTextService, private editorService: CardEditorService){

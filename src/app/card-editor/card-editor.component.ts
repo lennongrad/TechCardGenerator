@@ -24,7 +24,7 @@ export class CardEditorComponent {
   // text inputs
   @ViewChild('name', { static: true }) nameElement!: ElementRef;
   @ViewChild('url', { static: true }) urlElement!: ElementRef;
-  @ViewChild('vp', { static: true }) vpElement!: ElementRef;
+  @ViewChild('cost', { static: true }) costElement!: ElementRef;
   @ViewChild('credit', { static: true }) creditElement!: ElementRef;
   @ViewChild('types', { static: true }) typeElement!: ElementRef;
   @ViewChild('abilitiesList', { static: true }) abilitiesListElement!: ElementRef;
@@ -49,8 +49,8 @@ export class CardEditorComponent {
   creditsKey(event: any){
     this.getCard().credits = event.target.value;
   }
-  vpKey(event:any){
-    this.getCard().vp = event.target.value;
+  costKey(event:any){
+    this.getCard().cost = event.target.value;
   }
 
   saveCard() {
@@ -66,80 +66,40 @@ export class CardEditorComponent {
   getAllCards(): Array<CardData> {
     return this.editorService.allCards
   }
+
   loadSavedCard(index: number){
     this.editorService.loadCard(index)
     this.loadCard()
   }
+
   deleteCard(index: number){
     this.editorService.deleteCard(index)
     return false
   }
 
-  starClick(event: any){
-    this.getCard().star = !this.getCard().star;
-    this.editorService.updateCard();
-    this.loadCard();
-  }
-
-  statsKey(statsName: string, event: any){
-    var numberAmount = Number(event.target.value);
-    if(isNaN(numberAmount)){
-      numberAmount = 0;
-    }
-
-    switch(statsName){
-      case "pop": this.getCard().pop = numberAmount; break;
-      case "cash":  this.getCard().cash = numberAmount; break;
-      case "trouble":  this.getCard().trouble = numberAmount; break;
-    }
-
-    this.editorService.updateCard();
-    this.loadCard();
-  }
-
-  haveStatsClick(statsName: string, event: any){
-    switch(statsName){
-      case "pop": 
-        this.getCard().hasPop = !this.getCard().hasPop;
-        if(!this.getCard().hasPop){
-          this.getCard().pop = 0
-        } 
-        break;
-      case "cash":  
-        this.getCard().hasCash = !this.getCard().hasCash; 
-        if(!this.getCard().hasCash){
-          this.getCard().cash = 0
-        } 
-        break;
-      case "trouble":  
-        this.getCard().hasTrouble = !this.getCard().hasTrouble; 
-        if(!this.getCard().hasTrouble){
-          this.getCard().trouble = 0
-        } 
-        break;
-    }
-    this.editorService.updateCard();
-    this.loadCard();
-  }
-
   getAbilitiesLength(): number{
     return this.getCard().abilities.length;
+    this.editorService.cardUpdate.emit(null);
   }
 
   abilityNameInput(index:number, event:any){
     this.getCard().abilities[index].name = event.target.value;
+    this.editorService.cardUpdate.emit(null);
   }
 
   abilityReminderInput(index:number, event:any){
     this.getCard().abilities[index].reminder = event.target.value;
+    this.editorService.cardUpdate.emit(null);
   }
 
   addAbility(){
     this.getCard().abilities.push({name:""})
+    this.editorService.cardUpdate.emit(null);
   }
 
   removeAbility(){
     this.getCard().abilities.pop();
+    this.editorService.cardUpdate.emit(null);
   }  
   
   onFileChanged(event: any) {
@@ -156,7 +116,7 @@ export class CardEditorComponent {
 
   loadCard(){
     this.nameElement.nativeElement.value = this.getCard().name;
-    this.vpElement.nativeElement.value = this.getCard().vp == undefined ? "" : this.getCard().vp;
+    this.costElement.nativeElement.value = this.getCard().cost;
     this.typeElement.nativeElement.value = this.getCard().type;
     this.creditElement.nativeElement.value = this.getCard().credits;
 

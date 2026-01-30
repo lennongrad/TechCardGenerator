@@ -1,4 +1,5 @@
 <div id="editor-container">
+    ×
     <div class="editor-option">
         <div class="option-title">Name:</div>
         <div class="option-input">
@@ -28,7 +29,7 @@
     <div class="editor-option">
         <div class="option-title">Cost:</div>
         <div class="option-input">
-            <input (keyup)="vpKey($event)" #vp>
+            <input (keyup)="costKey($event)" #cost>
         </div>
     </div>
     <div class="editor-option" id="option-abilities">
@@ -52,8 +53,8 @@
         </div>
         <div id="all-saved-cards">
             <div class="saved-card" *ngFor="let card of getAllCards(); index as i" (click)="loadSavedCard(i)" (contextmenu)="deleteCard(i)">
-                <span class="cost-icon">[{{card.vp}}]</span>
-                <span class="star-icon" *ngIf="card.star">★</span>
+                <span class="cost-icon">[{{card.cost}}]</span>
+                <span class="star-icon" *ngIf="card.credits != ''">★</span>
                 <span>{{card.name}}</span></div>
         </div>
     </div>

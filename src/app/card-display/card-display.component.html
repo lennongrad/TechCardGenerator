@@ -1,12 +1,14 @@
-<div id="card-out" [style]="{width: cardWidth + 'px', height: cardHeight + 'px'}" [style.backgroundImage]="getCardBackground()">
+<div id="card-out" [style]="{width: cardWidth + 'px', height: cardHeight + 'px'}">
     <div id="section-art" class="section" [style.backgroundImage]="getBackgroundImage()"></div>
-    <div id="section-abilities" [style.backgroundImage]="'url(./assets/hexagons_a.png)'">
+    <div id="section-abilities" [style.backgroundImage]="'url(./assets/hexagons.png)'">
         <div class="ability" *ngFor="let ability of getAbilities()">
             <div class="ability-icons">
                 <span class="ability-icon" *ngFor="let icon of getIcons(ability.name)">
-                    <span *ngIf="icon[1] != ''"  [style.fontSize]="fontSizeHuge * 0.275 + 'px'">{{icon[1]}}</span>
-                    <img class="icon-image" [style.height]="fontSizeHuge + 'px'" [src]="'./assets/icon/' + icon[0] + '.png'">
-                    <img class="icon-resource" [style.height]="fontSizeMedium + 'px'" [src]="'./assets/resource_' + icon[2] + '.png'" *ngIf="icon[2] != ''">
+                    <span *ngIf="icon[1] != ''"  [style.fontSize]="statIconSize * 0.275 + 'px'">{{icon[1]}}</span>
+                    <img class="icon-image" [style.height]="statIconSize + 'px'" [src]="'./assets/icon/' + icon[0] + '.png'">
+                    <img class="icon-resource" [style.height]="statIconSize / 2 + 'px'" [src]="'./assets/resource_' + icon[2] + '.png'" *ngIf="icon[2] != ''">
+                    <img class="icon-target" [style.height]="statIconSize / 2 + 'px'" [src]="'./assets/target_' + icon[3] + '.png'" *ngIf="icon[3] != ''">
+                    <img class="icon-whatdo" [style.height]="statIconSize / 2 + 'px'" [src]="'./assets/whatdo_' + icon[4] + '.png'" *ngIf="icon[3] != ''">
                 </span>
             </div>
             <div class="ability-reminder" [style.fontSize]="fontSizeReminder + 'px'">
@@ -14,7 +16,7 @@
             </div>
         </div>
     </div>
-    <img id="border" [style]="{width: cardWidth + 5 + 'px', height: cardHeight + 5 + 'px'}" [src]="'./assets/border' + getColor() +  '.png'">
+    <img id="border" [style]="{width: cardWidth + 5 + 'px', height: cardHeight + 5 + 'px'}" [src]="'./assets/frame_'  + getType().toLowerCase() + '_' + getColor() +  '.png'">
     <div id="section-cost"><span id="cost-value" [style.fontSize]="fontSizeMedium + 'px'">{{getCost()}}</span></div>
     <div id="section-name" [style.fontSize]="fontSizeName + 'px'">
         <div>{{getName()}}</div>
