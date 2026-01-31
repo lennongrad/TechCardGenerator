@@ -1,5 +1,4 @@
 import { Component, ElementRef, EventEmitter, ViewChild } from '@angular/core';
-import { CardTextService } from '../card-text.service';
 import { CardEditorService } from '../card-editor.service';
 import { AbilityData, CardData } from '../carddata';
 import { CommonModule, KeyValuePipe, NgForOf } from '@angular/common';
@@ -55,6 +54,10 @@ export class CardEditorComponent {
 
   saveCard() {
     this.editorService.saveCurrentCard()
+    this.renderCard()
+  }
+
+  renderCard() {
     generateCanvas(document.querySelector("#card-out")!).then(canvas => {
       var link = document.getElementById('image-download-link');
       link!.setAttribute('download', `PH_${this.getCard().name.replace(/[\s\.]/g, '')}.png`);
@@ -168,9 +171,19 @@ export class CardEditorComponent {
     }
   }
 
+  exportAll(){
+    this.exportT(0);
+  }
+
+  exportT(index: number){
+    this.editorService.loadCard(index)
+    this.renderCard()
+    setTimeout(() => this.exportT(index + 1), 1000)
+  }
+
   ngOnInit(){
     setTimeout(() => {this.loadCard()}, 1)
   }
 
-  constructor(private element:ElementRef, private textService: CardTextService, private editorService: CardEditorService){  }
+  constructor(private element:ElementRef, private editorService: CardEditorService){  }
 }

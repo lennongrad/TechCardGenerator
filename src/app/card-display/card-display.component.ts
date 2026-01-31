@@ -1,14 +1,13 @@
 import { Component, ElementRef, HostListener, ViewEncapsulation } from '@angular/core';
 import { AbilityData, CardData } from '../carddata';
-import { CardTextService } from '../card-text.service';
 import { CardEditorService } from '../card-editor.service';
-import { KeyValuePipe, NgForOf, NgIf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 
 @Component({
   selector: 'app-card-display',
   standalone: true,
-  imports: [KeyValuePipe, NgForOf, NgIf, SafeHtmlPipe],
+  imports: [NgForOf, NgIf, SafeHtmlPipe],
   templateUrl: './card-display.component.html',
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./card-display.component.less']
@@ -170,9 +169,7 @@ export class CardDisplayComponent {
     this.setCardDimensions();
   }
 
-
   testCanvas: any;
-
   getTextWidth(text: any, font: any) {
     const canvas = this.testCanvas || (this.testCanvas = document.createElement("canvas"));
     const context = canvas.getContext("2d");
@@ -216,7 +213,7 @@ export class CardDisplayComponent {
     this.fontSizeReminder = startReminderSize;
   }
 
-  constructor(private element:ElementRef, private textService: CardTextService, private editorService: CardEditorService){
+  constructor(private element:ElementRef, private editorService: CardEditorService){
     editorService.cardDisplayComponent = this;
 
     editorService.cardUpdate.subscribe(() => {this.onCardUpdate()});

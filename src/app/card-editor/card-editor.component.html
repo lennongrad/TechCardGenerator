@@ -52,6 +52,7 @@
             <button (click)="expandCards()">Expand Cards</button>
             <button (click)="pasteCard()">Paste Card(s)</button>
             <button (click)="clearAll()">Clear All</button>
+            <button (click)="exportAll()">Export All</button>
         </div>
         <div id="all-saved-cards">
             <div class="saved-card" *ngFor="let card of getAllCards(); index as i" (click)="loadSavedCard(i)" (contextmenu)="deleteCard(i)">
