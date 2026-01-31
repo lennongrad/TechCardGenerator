@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { CardDisplayComponent } from './card-display/card-display.component';
-import { CardData } from './carddata';
+import { AbilityData, CardData } from './carddata';
 
 function compare( a: CardData, b: CardData ) {
   if ( a.cost! < b.cost! ){
@@ -21,7 +21,6 @@ export class CardEditorService {
   currentCard: CardData = {
     cost: "",
     abilities: [],
-    text: "",
     name: "",
     imageURL: "",
     credits: "",
@@ -32,14 +31,18 @@ export class CardEditorService {
 
   public cardUpdate = new EventEmitter<any>();
 
-  saveCard() {
-    var index = this.allCards.findIndex(card => card.name == this.currentCard.name);
-    if(index == -1){
-      this.allCards.push(this.currentCard)
-    } else {
-      this.allCards[index] = this.currentCard;
-    }
+  saveCurrentCard() {
+    this.saveCard(this.currentCard);
     this.currentCard = structuredClone(this.currentCard);
+  }
+
+  saveCard(cardToSave: CardData) {
+    var index = this.allCards.findIndex(card => card.name == cardToSave.name);
+    if(index == -1){
+      this.allCards.push(cardToSave)
+    } else {
+      this.allCards[index] = cardToSave;
+    }
 
     this.allCards.sort(compare);
 
@@ -66,6 +69,34 @@ export class CardEditorService {
       this.cardDisplayComponent.setCardDimensions();
     }
     this.cardUpdate.emit(null);
+  }
+
+  expandCards(){
+    var otherMaterials: Array<[string, string, string]> = [
+      ["Barnythium", "Barynthic", "b"], 
+      ["Cryonth","Cryonthic", "c"]
+    ];
+
+    var newCards: Array<CardData> = [];
+
+    this.allCards.forEach((card) => {
+      otherMaterials.forEach((m) => {
+        var newCard = JSON.parse(JSON.stringify(card))
+
+        newCard.name = newCard.name.replace(/Axiomite/gi, m[0]).replace(/Axiomitic/gi, m[1]);
+      
+        newCard.cost = newCard.cost.replace(/a/gi, m[2])
+        newCard.name = newCard.name.replace(/Axiomite/gi, m[0]).replace(/Axiomitic/gi, m[1]);
+        newCard.abilities.forEach((ability: AbilityData) => {
+          ability.name = ability.name.replace(/\_a/gi, "_" + m[2])
+          ability.reminder = ability.reminder!.replace(/\{A}/gi, `\{${m[2].toUpperCase()}\}`)
+        })
+        
+        newCards.push(newCard)
+      })
+    })
+
+    newCards.forEach(card => this.saveCard(card))
   }
 
   constructor() {

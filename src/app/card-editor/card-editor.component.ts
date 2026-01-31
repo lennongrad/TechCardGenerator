@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, ViewChild } from '@angular/core';
 import { CardTextService } from '../card-text.service';
 import { CardEditorService } from '../card-editor.service';
-import { CardData } from '../carddata';
+import { AbilityData, CardData } from '../carddata';
 import { CommonModule, KeyValuePipe, NgForOf } from '@angular/common';
 import html2canvas from 'html2canvas';
 
@@ -16,7 +16,7 @@ function generateCanvas(element:any){
 @Component({
   selector: 'app-card-editor',
   standalone: true,
-  imports: [CommonModule, KeyValuePipe, NgForOf],
+  imports: [CommonModule, NgForOf],
   templateUrl: './card-editor.component.html',
   styleUrls: ['./card-editor.component.less']
 })
@@ -54,13 +54,46 @@ export class CardEditorComponent {
   }
 
   saveCard() {
-    this.editorService.saveCard()
+    this.editorService.saveCurrentCard()
     generateCanvas(document.querySelector("#card-out")!).then(canvas => {
       var link = document.getElementById('image-download-link');
       link!.setAttribute('download', `PH_${this.getCard().name.replace(/[\s\.]/g, '')}.png`);
       link!.setAttribute('href', canvas.toDataURL("image/png"));
       link!.click();
     })
+  }
+
+  expandCards() {
+    this.editorService.expandCards()
+  }
+
+  async pasteCard() {
+    const copiedData = await navigator.clipboard.readText()
+
+    copiedData.split("\n").forEach(datum => {
+      var splitData = datum.split("\t")
+
+      if(splitData.length == 7){
+        var newCard: CardData = {
+          name: splitData[0],
+          type: splitData[3],
+          cost: splitData[4],
+          imageURL: splitData[1],
+          credits: splitData[2],
+          abilities: [
+            {name : splitData[5], reminder: splitData[6]}
+          ]
+        }
+
+        //console.log(newCard)
+        this.editorService.saveCard(newCard)
+      }
+    })
+  }
+
+  clearAll() {
+    localStorage.clear()
+    this.editorService.allCards = []
   }
 
   getAllCards(): Array<CardData> {
@@ -93,7 +126,7 @@ export class CardEditorComponent {
   }
 
   addAbility(){
-    this.getCard().abilities.push({name:""})
+    this.getCard().abilities.push({name:"", reminder:""})
     this.editorService.cardUpdate.emit(null);
   }
 

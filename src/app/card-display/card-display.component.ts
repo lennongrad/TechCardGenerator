@@ -1,14 +1,16 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewEncapsulation } from '@angular/core';
 import { AbilityData, CardData } from '../carddata';
 import { CardTextService } from '../card-text.service';
 import { CardEditorService } from '../card-editor.service';
 import { KeyValuePipe, NgForOf, NgIf } from '@angular/common';
+import { SafeHtmlPipe } from '../safe-html.pipe';
 
 @Component({
   selector: 'app-card-display',
   standalone: true,
-  imports: [KeyValuePipe, NgForOf, NgIf],
+  imports: [KeyValuePipe, NgForOf, NgIf, SafeHtmlPipe],
   templateUrl: './card-display.component.html',
+  encapsulation: ViewEncapsulation.None,
   styleUrls: ['./card-display.component.less']
 })
 export class CardDisplayComponent {
@@ -26,6 +28,7 @@ export class CardDisplayComponent {
   public fontSizeName: number = 0;
   // textbox font sizes
   public fontSizeReminder: number = 0;
+  public minReminderSize: number = 14;
   // resource icons
   public statIconSize: number = 0;
   public statModifier: number = 3;
@@ -62,15 +65,8 @@ export class CardDisplayComponent {
     setTimeout(() => {this.onCardUpdate()}, 100)
   }
 
-  //////////////
-  // getter functions for card properties
-  //////////////
   getName(): string{
     return this.getCurrentCard().name;
-  }
-
-  getCardBackground(): string{
-    return "url('./assets/eighty6.png')"
   }
 
   getBackgroundImage(): string{
@@ -120,10 +116,6 @@ export class CardDisplayComponent {
     return icons;
   }
 
-  getText(): string{
-    return this.getCurrentCard().text != null ? this.getCurrentCard().text! : "";
-  }
-
   getCredits(): string {
     return this.getCurrentCard().credits != null ? this.getCurrentCard().credits! : "";
   }
@@ -159,6 +151,16 @@ export class CardDisplayComponent {
     return segments[0]
   }
 
+  valueParse(s: string): string {
+    return s.replace(/\*/gi, "×");
+  }
+
+  reminderParse(s: string): string {
+    var newS = s.replace(/{([ABCDE])}/gi, (a,b) => (`<img style="width: ${this.fontSizeReminder}px" src="./assets/resource_${b.toLowerCase()}.png">`))
+    newS = newS.replace(/\\n/gi, (a,b) => "<br>")
+    return newS
+  }
+
   ngOnInit(){
     this.setCardDimensions();
   }
@@ -172,7 +174,6 @@ export class CardDisplayComponent {
   testCanvas: any;
 
   getTextWidth(text: any, font: any) {
-    // re-use canvas object for better performance
     const canvas = this.testCanvas || (this.testCanvas = document.createElement("canvas"));
     const context = canvas.getContext("2d");
     context.font = font;
@@ -193,7 +194,6 @@ export class CardDisplayComponent {
   }
 
   onCardUpdate(){
-    // calculate name size
     var startSize = this.cardHeight * 0.04;
     while(this.getTextWidth(this.getCurrentCard().name.toUpperCase(), `900 ${startSize}px myFont`) > this.cardWidth * 0.525){
       startSize -= 0.1;
@@ -201,6 +201,19 @@ export class CardDisplayComponent {
     this.fontSizeName = startSize;
     
     this.statIconSize = this.cardWidth * .15 * (1 - 0.2 * (this.getAbilities().length - 1));
+
+
+    var startReminderSize = this.cardWidth * 0.06;
+    var biggestAbilityReminder = this.getCurrentCard().abilities[0].reminder
+
+    if(biggestAbilityReminder.includes("\\n")){
+      biggestAbilityReminder = biggestAbilityReminder.split("\\n")[0]
+      startReminderSize *= 0.8
+    } 
+    while(this.getTextWidth(biggestAbilityReminder, `normal ${startReminderSize}px Arial`) > this.cardWidth * 0.8 && startReminderSize >= this.minReminderSize){
+      startReminderSize -= 0.01;
+    }
+    this.fontSizeReminder = startReminderSize;
   }
 
   constructor(private element:ElementRef, private textService: CardTextService, private editorService: CardEditorService){
